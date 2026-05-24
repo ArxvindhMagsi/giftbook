@@ -114,9 +114,9 @@ export default function App() {
     }
 
     // Automatic BGM startup play handler
-    const tryAutoplay = () => {
+    const tryAutoplay = async () => {
       if (synthRef.current) {
-        const isPlaying = synthRef.current.toggle(true);
+        const isPlaying = await synthRef.current.toggle(true);
         if (isPlaying) {
           setBackgroundPlay(true);
           // Once audio is successfully started on interaction, clear fallback listeners
@@ -269,8 +269,9 @@ export default function App() {
       }
     }
     if (synthRef.current) {
-      const state = synthRef.current.toggle();
-      setBackgroundPlay(state);
+      synthRef.current.toggle().then((state) => {
+        setBackgroundPlay(state);
+      });
     }
   };
 

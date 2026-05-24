@@ -8,10 +8,10 @@ export class AudioSynthesizer {
     // Initialized lazily upon user interaction to follow browser security policies
   }
 
-  public toggle(forceState?: boolean): boolean {
+  public async toggle(forceState?: boolean): Promise<boolean> {
     if (forceState === true) {
       if (!this.isPlaying) {
-        this.start();
+        return await this.start();
       }
       return true;
     } else if (forceState === false) {
@@ -24,8 +24,7 @@ export class AudioSynthesizer {
         this.stop();
         return false;
       } else {
-        this.start();
-        return true;
+        return await this.start();
       }
     }
   }
@@ -35,7 +34,7 @@ export class AudioSynthesizer {
     // Mode is kept for backward compatibility, but now we play the beautiful BGM
   }
 
-  private start() {
+  private async start(): Promise<boolean> {
     try {
       if (!this.bgm) {
         this.bgm = new Audio("/the_love_bug_has_bitten_bgm.mp3");
@@ -47,12 +46,15 @@ export class AudioSynthesizer {
         this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
       if (this.ctx.state === "suspended") {
-        this.ctx.resume();
+        await this.ctx.resume();
       }
       this.isPlaying = true;
-      this.bgm.play().catch(e => console.error("BGM playback blocked or failed:", e));
+      await this.bgm.play();
+      return true;
     } catch (e) {
-      console.error("Audio context initialization failed", e);
+      console.error("BGM playback blocked or failed:", e);
+      this.isPlaying = false;
+      return false;
     }
   }
 
