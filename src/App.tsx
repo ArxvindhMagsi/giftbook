@@ -86,25 +86,12 @@ export default function App() {
   const [cardTheme, setCardTheme] = useState<"gold" | "rose" | "teal" | "parchment">("rose");
   const [formSuccess, setFormSuccess] = useState(false);
 
-  // Intro Handwriting Simulator States
-  const [introTextIndex, setIntroTextIndex] = useState(0);
-  const [currentIntroLine, setCurrentIntroLine] = useState("");
-  const [introCompleted, setIntroCompleted] = useState(false);
+  // Greeting loop state
+  const [greetingIndex, setGreetingIndex] = useState(0);
 
   // Audio state
   const synthRef = useRef<AudioSynthesizer | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  // Hardcoded full text configuration for typewriter pop-up
-  const introMessage = useMemo(() => [
-    "Dear Yuvasree Mam,",
-    "Managing 97 passionate minds is no simple feat...",
-    "But day in and day out, you have led us with superhuman patience, boundless wisdom, and a warm contagious smile that lights up every room.",
-    "You are our Point of Contact (POC), our stellar trainer, and a wonderful mentor.",
-    "This interactive book is a collection of gratitude and hearts from all 97 of us who admire and respect you.",
-    "Open it further to feel our love and appreciation of your tireless service...",
-    "— In coordination, your 97-strong training batch. 🌸"
-  ], []);
 
   // Initialize and track localStorage
   useEffect(() => {
@@ -132,45 +119,32 @@ export default function App() {
 
   const [direction, setDirection] = useState<1 | -1>(1);
 
-  // Handwriting Intro Sequence Timer Loop
+  // Multilingual sequential "Hi" slideshow loop at startup
   useEffect(() => {
     if (!showIntro) return;
 
-    let charIndex = 0;
-    let lineIndex = 0;
-    let timer: any;
-
-    const typeMsgClean = () => {
-      if (lineIndex < introMessage.length) {
-        const line = introMessage[lineIndex];
-        if (charIndex <= line.length) {
-          setCurrentIntroLine(line.substring(0, charIndex));
-          charIndex++;
-          // Play micro typing sounds organically
-          if (synthRef.current && Math.random() > 0.45) {
-            synthRef.current.playTypingSound();
-          }
-          timer = setTimeout(typeMsgClean, 40);
+    const interval = setInterval(() => {
+      setGreetingIndex((prev) => {
+        if (prev < multilingualGreetings.length - 1) {
+          return prev + 1;
         } else {
-          // Pause and flip to next sentence
-          timer = setTimeout(() => {
-            setIntroTextIndex((prev) => prev + 1);
-            lineIndex++;
-            charIndex = 0;
-            if (lineIndex >= introMessage.length) {
-              setIntroCompleted(true);
-            } else {
-              typeMsgClean();
+          clearInterval(interval);
+          // Sequence completed! Auto transition to cover page and play BGM
+          setTimeout(() => {
+            setShowIntro(false);
+            if (synthRef.current) {
+              synthRef.current.toggle(true).then((playing) => {
+                if (playing) setBackgroundPlay(true);
+              });
             }
-          }, 1200);
+          }, 1500); // give 1.5 seconds to admire the final greeting
+          return prev;
         }
-      }
-    };
+      });
+    }, 1600); // transition every 1.6 seconds
 
-    typeMsgClean();
-
-    return () => clearTimeout(timer);
-  }, [showIntro, introMessage]);
+    return () => clearInterval(interval);
+  }, [showIntro]);
 
   // Merge core database + user written testimonials
   const testimonialsCollection = useMemo(() => {
@@ -1190,111 +1164,98 @@ export default function App() {
       </footer>
 
 
-      {/* - - - - - - INTRO POPUP: HANDWRITING TYPING GREETINGS GALA - - - - - - */}
+      {/* - - - - - - INTRO POPUP: SEQUENTIAL MULTILINGUAL GREETINGS SLIDESHOW - - - - - - */}
       {showIntro && (
-        <div id="intro-writing-popup" className="absolute inset-0 bg-rose-950/40 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div id="intro-writing-popup" className="absolute inset-0 bg-[#fcf8f4] z-50 flex items-center justify-center p-4">
+          
+          {/* Decorative floral background vectors */}
+          <div className="absolute top-0 left-0 w-48 h-48 opacity-20 pointer-events-none select-none">
+            <svg viewBox="0 0 100 100" fill="currentColor" className="text-rose-300">
+              <path d="M50 0 C45 25, 25 45, 0 50 C25 55, 45 75, 50 100 C55 75, 75 55, 100 50 C75 45, 55 25, 50 0 Z" />
+            </svg>
+          </div>
+          <div className="absolute bottom-0 right-0 w-64 h-64 opacity-25 pointer-events-none select-none">
+            <svg viewBox="0 0 100 100" fill="currentColor" className="text-pink-300">
+              <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+              <path d="M30,50 Q50,20 70,50 T30,50" />
+            </svg>
+          </div>
+          
+          {/* Floating Rose Petals Layer */}
+          <RosePetalsCanvas />
 
-          <div className="w-full max-w-3xl bg-[#fdfbf6] rounded-2xl shadow-2xl relative p-6 sm:p-10 border border-[#dfc3a7] overflow-y-auto max-h-[90vh] custom-scrollbar overflow-x-hidden animate-soft-float">
-
+          <div className="w-full max-w-xl bg-white/90 backdrop-blur-md rounded-2xl shadow-book relative p-8 sm:p-12 border border-[#dfc3a7] text-center overflow-hidden animate-soft-float">
+            
             {/* Elegant Vintage Frame overlay */}
-            <div className="absolute inset-4 sm:inset-6 border border-amber-200 pointer-events-none rounded opacity-45" />
-            <div className="absolute inset-5 sm:inset-7 border-2 border-dashed border-amber-300 rounded pointer-events-none opacity-20" />
+            <div className="absolute inset-4 border border-amber-200 pointer-events-none rounded opacity-45" />
+            <div className="absolute inset-5 border-2 border-dashed border-amber-300 rounded pointer-events-none opacity-20" />
 
-            <div className="flex justify-between items-start border-b border-rose-100 pb-3">
-              <span className="text-xs uppercase tracking-widest gold-text font-serif-elegant font-bold">Welcoming Greetings Gala</span>
-              <button
-                onClick={() => {
-                  setShowIntro(false);
-                  // Ensure BGM plays when closing the greeting page
-                  if (synthRef.current) {
-                    synthRef.current.toggle(true).then((playing) => {
-                      if (playing) setBackgroundPlay(true);
-                    });
-                  }
-                }}
-                className="p-1 rounded-full hover:bg-rose-50 text-rose-700 font-bold transition-all relative z-10"
-                title="Skip to Book Overview"
-              >
-                <X className="w-5 h-5" />
-              </button>
+            {/* Skip Intro Button */}
+            <button
+              onClick={() => {
+                setShowIntro(false);
+                if (synthRef.current) {
+                  synthRef.current.toggle(true).then((playing) => {
+                    if (playing) setBackgroundPlay(true);
+                  });
+                }
+              }}
+              className="absolute top-8 right-8 text-xs font-bold text-rose-500 hover:text-rose-700 transition px-3 py-1.5 rounded-full border border-rose-100 hover:bg-rose-50/50 z-20 flex items-center space-x-1"
+            >
+              <span>Skip Intro</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Glowing Heart Pulse behind the text */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5">
+              <Heart className="w-80 h-80 text-rose-500 fill-rose-500 animate-pulse" />
             </div>
 
-            {/* A crazy, beautiful multilingual greetings gallery */}
-            <div className="mt-6 mb-4">
-              <h3 className="text-center text-xs font-serif-elegant font-bold gold-text uppercase tracking-widest mb-3">
-                Saying Hi in many lovely languages! 🌟
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-w-2xl mx-auto px-2">
-                {multilingualGreetings.map((g, i) => (
-                  <div 
-                    key={i} 
-                    className={`px-3 py-1.5 rounded-xl border text-center transition-all hover:scale-105 shadow-xs flex flex-col justify-center items-center ${g.color}`}
-                  >
-                    <span className="text-[8px] uppercase tracking-tighter opacity-60 font-semibold">{g.lang}</span>
-                    <span className="text-xs font-bold leading-tight mt-0.5">{g.text}</span>
-                    <span className="text-[9px] italic opacity-85">"{g.translit}"</span>
-                  </div>
-                ))}
-              </div>
+            <div className="relative z-10 h-64 flex flex-col justify-center items-center">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={greetingIndex}
+                  initial={{ opacity: 0, scale: 0.8, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: -15 }}
+                  transition={{ duration: 0.45, ease: "easeInOut" }}
+                  className="flex flex-col items-center justify-center"
+                >
+                  <span className="text-[10px] sm:text-xs tracking-widest font-black uppercase text-amber-600 mb-2 block font-mono">
+                    ✦ Greetings in {multilingualGreetings[greetingIndex].lang} ✦
+                  </span>
+                  
+                  {/* Huge calligraphic greeting */}
+                  <h2 className="text-5xl sm:text-6xl md:text-7xl font-parisienne text-rose-600 font-bold tracking-wide filter drop-shadow-[0_2px_4px_rgba(225,29,72,0.1)] py-2 leading-tight">
+                    {multilingualGreetings[greetingIndex].text}
+                  </h2>
+                  
+                  <span className="text-base sm:text-lg italic text-amber-900 font-semibold font-serif-elegant mt-2 block">
+                    "{multilingualGreetings[greetingIndex].translit}"
+                  </span>
+                </motion.div>
+              </AnimatePresence>
             </div>
 
-            {/* Handwritten script reveal panel mimicking pen quill cursor */}
-            <div className="my-6 min-h-[200px] px-2 sm:px-4 relative flex flex-col justify-center border-t border-rose-100/60 pt-6">
-
-              <div className="space-y-4 text-center max-w-xl mx-auto">
-                <span className="text-3xl font-parisienne block text-rose-600 mb-1">Message to you, Yuvasree</span>
-
-                {/* Yuvasree's Beautiful Portrait in Intro */}
-                <div className="flex justify-center my-2 relative z-10">
-                  <YuvasreePhoto size="medium" />
-                </div>
-
-                {/* Simulated typewriter cursor representation tracing inline */}
-                <p className="font-handwritten text-lg sm:text-xl text-amber-950 leading-relaxed font-semibold filter drop-shadow-[0_1px_1px_rgba(139,92,26,0.15)] px-4">
-                  {currentIntroLine}
-                  <span className="typing-cursor ml-1" />
-                </p>
-
-                {introCompleted && (
-                  <div className="pt-1 animate-bounce">
-                    <p className="text-[9px] text-amber-700 uppercase font-black tracking-widest">
-                      ✦ Words Written Successfully ✦
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Float Floating Feather Pen / Icon Cursor following line drawing */}
-              <div className="absolute right-12 bottom-6 animate-pulse text-amber-600/50 hidden md:block">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="transform rotate-12">
-                  <path d="M2 22s8.25-3 12.5-7.5S22 2 22 2s-6.75 3-11.25 7.25S2 22 2 22z" />
-                  <path d="M12 10l3 3" />
-                  <path d="M14 7l3 3" />
-                </svg>
-              </div>
+            {/* Interactive Progress Indicators */}
+            <div className="relative z-10 mt-8 flex justify-center space-x-1.5">
+              {multilingualGreetings.map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    idx === greetingIndex 
+                      ? "bg-rose-500 w-5" 
+                      : idx < greetingIndex 
+                        ? "bg-rose-300" 
+                        : "bg-rose-100"
+                  }`}
+                />
+              ))}
             </div>
 
-            {/* Pop-up Navigation Button Trigger */}
-            <div className="border-t border-rose-100/60 pt-4 text-center space-y-2">
-              <button
-                onClick={() => {
-                  setShowIntro(false);
-                  // Ensure BGM starts playing seamlessly exactly as they enter the cover page
-                  if (synthRef.current) {
-                    synthRef.current.toggle(true).then((playing) => {
-                      if (playing) setBackgroundPlay(true);
-                    });
-                  }
-                }}
-                className="px-8 py-3 gold-gradient hover:opacity-95 text-[#3b2401] rounded-full text-xs font-bold shadow-lg tracking-widest uppercase transition-transform hover:scale-105 active:scale-95 flex items-center space-x-2 mx-auto relative z-10"
-              >
-                <span>Enter Yuvasree's Memory Book 🌸</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-              <p className="text-[9px] text-amber-800">
-                Clicking will open the memories book and start playing the beautiful background score.
-              </p>
-            </div>
+            <p className="text-[10px] text-amber-700 mt-5 uppercase tracking-widest font-bold opacity-85">
+              Opening Yuvasree's Memory Book...
+            </p>
 
           </div>
 
