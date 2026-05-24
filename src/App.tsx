@@ -50,6 +50,21 @@ const spreadVariants = {
 };
 
 
+const multilingualGreetings = [
+  { lang: "Tamil", text: "வணக்கம்", translit: "Vanakkam", color: "bg-rose-50 text-rose-700 border-rose-200" },
+  { lang: "Hindi", text: "नमस्ते", translit: "Namaste", color: "bg-amber-50 text-amber-800 border-amber-200" },
+  { lang: "English", text: "Hello / Hi", translit: "Hello", color: "bg-emerald-50 text-emerald-700 border-emerald-250" },
+  { lang: "Telugu", text: "నమస్కారం", translit: "Namaskaram", color: "bg-blue-50 text-blue-700 border-blue-200" },
+  { lang: "Malayalam", text: "നമസ്കാരം", translit: "Namaskaram", color: "bg-purple-50 text-purple-700 border-purple-200" },
+  { lang: "Kannada", text: "ನಮಸ್ಕಾರ", translit: "Namaskara", color: "bg-teal-50 text-teal-700 border-teal-200" },
+  { lang: "Spanish", text: "¡Hola!", translit: "Hola", color: "bg-pink-50 text-pink-700 border-pink-200" },
+  { lang: "French", text: "Bonjour", translit: "Bonjour", color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+  { lang: "Japanese", text: "こんにちは", translit: "Konnichiwa", color: "bg-yellow-50 text-yellow-800 border-yellow-250" },
+  { lang: "Korean", text: "안녕하세요", translit: "Annyeong", color: "bg-violet-50 text-violet-700 border-violet-200" },
+  { lang: "Italian", text: "Ciao", translit: "Ciao", color: "bg-orange-50 text-orange-850 border-orange-200" },
+  { lang: "German", text: "Hallo", translit: "Hallo", color: "bg-cyan-50 text-cyan-700 border-cyan-200" }
+];
+
 
 export default function App() {
   // Application State
@@ -112,34 +127,6 @@ export default function App() {
         setLikedIds(JSON.parse(savedLikes));
       } catch (e) { }
     }
-
-    // Automatic BGM startup play handler
-    const tryAutoplay = async () => {
-      if (synthRef.current) {
-        const isPlaying = await synthRef.current.toggle(true);
-        if (isPlaying) {
-          setBackgroundPlay(true);
-          // Once audio is successfully started on interaction, clear fallback listeners
-          window.removeEventListener("click", tryAutoplay);
-          window.removeEventListener("touchstart", tryAutoplay);
-        }
-      }
-    };
-
-    // Attempt direct play after minor delay for DOM and audio source loading
-    const autoplayTimeout = setTimeout(() => {
-      tryAutoplay();
-    }, 500);
-
-    // Fallback: start BGM instantly upon any user interaction on the screen
-    window.addEventListener("click", tryAutoplay);
-    window.addEventListener("touchstart", tryAutoplay);
-
-    return () => {
-      clearTimeout(autoplayTimeout);
-      window.removeEventListener("click", tryAutoplay);
-      window.removeEventListener("touchstart", tryAutoplay);
-    };
   }, []);
 
 
@@ -1207,43 +1194,70 @@ export default function App() {
       {showIntro && (
         <div id="intro-writing-popup" className="absolute inset-0 bg-rose-950/40 backdrop-blur-md z-50 flex items-center justify-center p-4">
 
-          <div className="w-full max-w-2xl bg-[#fdfbf6] rounded-2xl shadow-2xl relative p-6 sm:p-10 border border-[#dfc3a7] overflow-hidden animate-soft-float">
+          <div className="w-full max-w-3xl bg-[#fdfbf6] rounded-2xl shadow-2xl relative p-6 sm:p-10 border border-[#dfc3a7] overflow-y-auto max-h-[90vh] custom-scrollbar overflow-x-hidden animate-soft-float">
 
             {/* Elegant Vintage Frame overlay */}
             <div className="absolute inset-4 sm:inset-6 border border-amber-200 pointer-events-none rounded opacity-45" />
             <div className="absolute inset-5 sm:inset-7 border-2 border-dashed border-amber-300 rounded pointer-events-none opacity-20" />
 
             <div className="flex justify-between items-start border-b border-rose-100 pb-3">
-              <span className="text-xs uppercase tracking-widest gold-text font-serif-elegant font-bold">Memories Book Preview</span>
+              <span className="text-xs uppercase tracking-widest gold-text font-serif-elegant font-bold">Welcoming Greetings Gala</span>
               <button
-                onClick={() => setShowIntro(false)}
-                className="p-1 rounded-full hover:bg-rose-50 text-rose-700 font-bold transition-all"
+                onClick={() => {
+                  setShowIntro(false);
+                  // Ensure BGM plays when closing the greeting page
+                  if (synthRef.current) {
+                    synthRef.current.toggle(true).then((playing) => {
+                      if (playing) setBackgroundPlay(true);
+                    });
+                  }
+                }}
+                className="p-1 rounded-full hover:bg-rose-50 text-rose-700 font-bold transition-all relative z-10"
                 title="Skip to Book Overview"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Handwritten script reveal panel mimicking pen quill cursor */}
-            <div className="my-6 min-h-[220px] sm:min-h-[240px] px-2 sm:px-4 relative flex flex-col justify-center">
+            {/* A crazy, beautiful multilingual greetings gallery */}
+            <div className="mt-6 mb-4">
+              <h3 className="text-center text-xs font-serif-elegant font-bold gold-text uppercase tracking-widest mb-3">
+                Saying Hi in many lovely languages! 🌟
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-w-2xl mx-auto px-2">
+                {multilingualGreetings.map((g, i) => (
+                  <div 
+                    key={i} 
+                    className={`px-3 py-1.5 rounded-xl border text-center transition-all hover:scale-105 shadow-xs flex flex-col justify-center items-center ${g.color}`}
+                  >
+                    <span className="text-[8px] uppercase tracking-tighter opacity-60 font-semibold">{g.lang}</span>
+                    <span className="text-xs font-bold leading-tight mt-0.5">{g.text}</span>
+                    <span className="text-[9px] italic opacity-85">"{g.translit}"</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-              <div className="space-y-4 text-center max-w-lg mx-auto">
-                <span className="text-3xl font-parisienne block text-rose-600 mb-2">Message to you, Yuvasree</span>
+            {/* Handwritten script reveal panel mimicking pen quill cursor */}
+            <div className="my-6 min-h-[200px] px-2 sm:px-4 relative flex flex-col justify-center border-t border-rose-100/60 pt-6">
+
+              <div className="space-y-4 text-center max-w-xl mx-auto">
+                <span className="text-3xl font-parisienne block text-rose-600 mb-1">Message to you, Yuvasree</span>
 
                 {/* Yuvasree's Beautiful Portrait in Intro */}
-                <div className="flex justify-center my-3 relative z-10">
+                <div className="flex justify-center my-2 relative z-10">
                   <YuvasreePhoto size="medium" />
                 </div>
 
                 {/* Simulated typewriter cursor representation tracing inline */}
-                <p className="font-handwritten text-xl sm:text-2xl text-amber-950 leading-relaxed font-semibold filter drop-shadow-[0_1px_1px_rgba(139,92,26,0.15)]">
+                <p className="font-handwritten text-lg sm:text-xl text-amber-950 leading-relaxed font-semibold filter drop-shadow-[0_1px_1px_rgba(139,92,26,0.15)] px-4">
                   {currentIntroLine}
                   <span className="typing-cursor ml-1" />
                 </p>
 
                 {introCompleted && (
-                  <div className="pt-2 animate-bounce">
-                    <p className="text-[10px] text-amber-700 uppercase font-black tracking-widest">
+                  <div className="pt-1 animate-bounce">
+                    <p className="text-[9px] text-amber-700 uppercase font-black tracking-widest">
                       ✦ Words Written Successfully ✦
                     </p>
                   </div>
@@ -1251,8 +1265,8 @@ export default function App() {
               </div>
 
               {/* Float Floating Feather Pen / Icon Cursor following line drawing */}
-              <div className="absolute right-12 bottom-8 animate-pulse text-amber-600/50 hidden md:block">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="transform rotate-12">
+              <div className="absolute right-12 bottom-6 animate-pulse text-amber-600/50 hidden md:block">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="transform rotate-12">
                   <path d="M2 22s8.25-3 12.5-7.5S22 2 22 2s-6.75 3-11.25 7.25S2 22 2 22z" />
                   <path d="M12 10l3 3" />
                   <path d="M14 7l3 3" />
@@ -1265,19 +1279,20 @@ export default function App() {
               <button
                 onClick={() => {
                   setShowIntro(false);
-                  // Ensure BGM continues playing seamlessly instead of toggling off
+                  // Ensure BGM starts playing seamlessly exactly as they enter the cover page
                   if (synthRef.current) {
-                    synthRef.current.toggle(true);
-                    setBackgroundPlay(true);
+                    synthRef.current.toggle(true).then((playing) => {
+                      if (playing) setBackgroundPlay(true);
+                    });
                   }
                 }}
-                className="px-8 py-3 gold-gradient hover:opacity-95 text-[#3b2401] rounded-full text-xs font-bold shadow-lg tracking-widest uppercase transition-transform hover:scale-105 active:scale-95 flex items-center space-x-2 mx-auto"
+                className="px-8 py-3 gold-gradient hover:opacity-95 text-[#3b2401] rounded-full text-xs font-bold shadow-lg tracking-widest uppercase transition-transform hover:scale-105 active:scale-95 flex items-center space-x-2 mx-auto relative z-10"
               >
-                <span>Read Trainee Gratitudes 🌸</span>
+                <span>Enter Yuvasree's Memory Book 🌸</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
               <p className="text-[9px] text-amber-800">
-                Clicking will open the memories book with a beautiful background score playing to accompany your reading experience.
+                Clicking will open the memories book and start playing the beautiful background score.
               </p>
             </div>
 
