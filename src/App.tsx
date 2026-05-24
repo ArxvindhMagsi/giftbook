@@ -1217,7 +1217,7 @@ export default function App() {
 
       {/* - - - - - - INTRO POPUP 1: SEQUENTIAL MULTILINGUAL GREETINGS SLIDESHOW - - - - - - */}
       {introPhase === "greetings" && (
-        <div id="intro-writing-popup" className="absolute inset-0 bg-[#fcf8f4] z-50 flex items-center justify-center p-4">
+        <div id="intro-writing-popup" className="fixed inset-0 bg-[#fcf8f4] z-50 flex items-center justify-center p-4 overflow-hidden">
           
           {/* Decorative floral background vectors */}
           <div className="absolute top-0 left-0 w-48 h-48 opacity-20 pointer-events-none select-none">
@@ -1315,7 +1315,7 @@ export default function App() {
 
       {/* - - - - - - INTRO POPUP 2: FULL SCREEN COVER PAGE (HER PHOTO + TYPEWRITER LETTER + BGM START) - - - - - - */}
       {introPhase === "cover" && (
-        <div id="intro-cover-popup" className="absolute inset-0 bg-[#fdfaf5] z-50 flex items-center justify-center p-4">
+        <div id="intro-cover-popup" className="fixed inset-0 bg-[#fdfaf5] z-50 flex items-center justify-center p-4 overflow-hidden">
           
           {/* Decorative floral background vectors */}
           <div className="absolute top-0 left-0 w-48 h-48 opacity-25 pointer-events-none select-none">
