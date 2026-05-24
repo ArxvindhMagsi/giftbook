@@ -449,7 +449,7 @@ export default function App() {
       <main className="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8 relative z-20">
 
         {/* The Open Book Workspace Framework */}
-        <div id="main-book-frame" className="w-full max-w-6xl aspect-[16/10.5] md:aspect-[16/10] bg-[#fbf6f0] rounded-2xl shadow-book relative flex p-1 md:p-3 overflow-hidden border border-[#dfc3a7]">
+        <div id="main-book-frame" className="w-full max-w-6xl h-[82vh] md:h-auto md:aspect-[16/10] bg-[#fbf6f0] rounded-2xl shadow-book relative flex p-1 md:p-3 overflow-hidden border border-[#dfc3a7]">
 
           {/* Spine shadow binding to divide left and right pages realistic styling */}
           <div className="absolute top-0 bottom-0 left-1/2 -ml-3.5 w-7 z-35 spine-gradient opacity-85 hidden md:block rounded-md shadow-inner" />
@@ -472,7 +472,7 @@ export default function App() {
                   transformStyle: "preserve-3d",
                   transformOrigin: direction > 0 ? "left center" : "right center",
                 }}
-                className="absolute inset-0 w-full h-full flex flex-col md:flex-row bg-[#fdfbf7] rounded-xl overflow-hidden shadow-inner p-1 sm:p-4"
+                className="absolute inset-0 w-full h-full flex flex-col md:flex-row bg-[#fdfbf7] rounded-xl overflow-y-auto md:overflow-hidden shadow-inner p-1 sm:p-4 custom-scrollbar"
               >
 
                 {/* - - - - - - SPREAD 0: THE BOOK COVERS - - - - - - */}
@@ -480,7 +480,7 @@ export default function App() {
                   <div className="w-full h-full flex flex-col md:flex-row z-30" style={{ transformStyle: "preserve-3d", perspective: 2000 }}>
 
                     {/* Left Page (Intro, Quote & Letter) */}
-                    <div className="w-full md:w-1/2 h-full flex flex-col justify-between p-6 sm:p-10 border-r border-[#f1e6da] relative bg-cover bg-[#faf4ec]"
+                    <div className="w-full md:w-1/2 h-full flex-shrink-0 md:flex-shrink flex flex-col justify-between p-6 sm:p-10 border-b md:border-b-0 md:border-r border-[#f1e6da] relative bg-cover bg-[#faf4ec]"
                     >
                       {/* Victorian gold corner borders */}
                       <div className="absolute top-6 left-6 border-t-2 border-l-2 gold-border w-10 h-10 opacity-70" />
@@ -521,7 +521,7 @@ export default function App() {
                     </div>
 
                     {/* Right Page (The Golden Cover Board) */}
-                    <div className="w-full md:w-1/2 h-full flex flex-col justify-between p-6 sm:p-10 relative bg-gradient-to-br from-[#805e46] to-[#402a11] text-amber-50 shadow-inner rounded-r-lg"
+                    <div className="w-full md:w-1/2 h-full flex-shrink-0 md:flex-shrink flex flex-col justify-between p-6 sm:p-10 relative bg-gradient-to-br from-[#805e46] to-[#402a11] text-amber-50 shadow-inner md:rounded-r-lg"
                     >
                       {/* Floral gold filigree outline overlay */}
                       <div className="absolute inset-4 sm:inset-6 border-2 border-[#dfb76c] rounded-lg opacity-40 pointer-events-none" />
@@ -566,7 +566,7 @@ export default function App() {
                   <div className="w-full h-full flex flex-col md:flex-row z-30" style={{ transformStyle: "preserve-3d", perspective: 2000 }}>
 
                     {/* Left Page (Table of Contents Index & Filters) */}
-                    <div className="w-full md:w-1/2 h-full flex flex-col justify-between p-4 sm:p-6 border-r border-[#f1e6da] relative bg-[#faf6f0]"
+                    <div className="w-full md:w-1/2 h-full flex-shrink-0 md:flex-shrink flex flex-col justify-between p-4 sm:p-6 border-b md:border-b-0 md:border-r border-[#f1e6da] relative bg-[#faf6f0]"
                     >
 
                       <div className="mb-3">
@@ -676,7 +676,7 @@ export default function App() {
                     </div>
 
                     {/* Right Page (Statistical Milestone Canvas Dashboard) */}
-                    <div className="w-full md:w-1/2 h-full flex flex-col justify-between p-4 sm:p-6 bg-[#fffdfb] relative"
+                    <div className="w-full md:w-1/2 h-full flex-shrink-0 md:flex-shrink flex flex-col justify-between p-4 sm:p-6 bg-[#fffdfb] relative"
                     >
 
                       {/* Decorative faint background heart outline */}
@@ -780,7 +780,7 @@ export default function App() {
                   <div className="w-full h-full flex flex-col md:flex-row z-30" style={{ transformStyle: "preserve-3d", perspective: 2000 }}>
 
                     {/* Left Page (Testimonial Card A) */}
-                    <div className="w-full md:w-1/2 h-full flex flex-col justify-between p-5 sm:p-7 border-r border-[#f1e6da] relative bg-[#faf6f1]"
+                    <div className="w-full md:w-1/2 h-full flex-shrink-0 md:flex-shrink flex flex-col justify-between p-5 sm:p-7 border-b md:border-b-0 md:border-r border-[#f1e6da] relative bg-[#faf6f1]"
                     >
 
                       {leftTestimonial ? (
@@ -860,7 +860,7 @@ export default function App() {
                     </div>
 
                     {/* Right Page (Testimonial Card B) */}
-                    <div className="w-full md:w-1/2 h-full flex flex-col justify-between p-5 sm:p-7 relative bg-[#fffdfb]"
+                    <div className="w-full md:w-1/2 h-full flex-shrink-0 md:flex-shrink flex flex-col justify-between p-5 sm:p-7 relative bg-[#fffdfb]"
                     >
 
                       {rightTestimonial ? (
@@ -975,7 +975,7 @@ export default function App() {
                   <div className="w-full h-full flex flex-col md:flex-row z-30" style={{ transformStyle: "preserve-3d", perspective: 2000 }}>
 
                     {/* Left Page (Submit a Custom Feedback card form) */}
-                    <div className="w-full md:w-1/2 h-full flex flex-col justify-between p-4 sm:p-6 border-r border-[#f1e6da] relative bg-[#faf6f1]"
+                    <div className="w-full md:w-1/2 h-full flex-shrink-0 md:flex-shrink flex flex-col justify-between p-4 sm:p-6 border-b md:border-b-0 md:border-r border-[#f1e6da] relative bg-[#faf6f1]"
                     >
 
                       <div>
@@ -1122,7 +1122,7 @@ export default function App() {
                     </div>
 
                     {/* Right Page (The Elegant BACK COVER) */}
-                    <div className="w-full md:w-1/2 h-full flex flex-col justify-between p-6 sm:p-10 relative bg-gradient-to-tr from-[#543b2a] to-[#26160a] text-amber-100 rounded-r-lg shadow-inner text-center"
+                    <div className="w-full md:w-1/2 h-full flex-shrink-0 md:flex-shrink flex flex-col justify-between p-6 sm:p-10 relative bg-gradient-to-tr from-[#543b2a] to-[#26160a] text-amber-100 md:rounded-r-lg shadow-inner text-center"
                     >
 
                       {/* Filigree corner borders back cover styling */}
