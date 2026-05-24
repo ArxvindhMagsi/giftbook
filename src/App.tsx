@@ -68,8 +68,8 @@ const multilingualGreetings = [
 
 export default function App() {
   // Application State
-  const [showIntro, setShowIntro] = useState(true);
-  const [currentSpread, setCurrentSpread] = useState(0);
+  const [introPhase, setIntroPhase] = useState<"greetings" | "cover" | "none">("greetings");
+  const [currentSpread, setCurrentSpread] = useState(1); // Landing inside the book goes directly to Spread 1 (Stats & Directory)
   const [searchQuery, setSearchQuery] = useState("");
   const [customTestimonials, setCustomTestimonials] = useState<Testimonial[]>([]);
   const [likedIds, setLikedIds] = useState<number[]>([]);
@@ -86,8 +86,10 @@ export default function App() {
   const [cardTheme, setCardTheme] = useState<"gold" | "rose" | "teal" | "parchment">("rose");
   const [formSuccess, setFormSuccess] = useState(false);
 
-  // Greeting loop state
+  // Greeting loop and handwriting states
   const [greetingIndex, setGreetingIndex] = useState(0);
+  const [currentIntroLine, setCurrentIntroLine] = useState("");
+  const [introCompleted, setIntroCompleted] = useState(false);
 
   // Audio state
   const synthRef = useRef<AudioSynthesizer | null>(null);
@@ -121,7 +123,7 @@ export default function App() {
 
   // Multilingual sequential "Hi" slideshow loop at startup
   useEffect(() => {
-    if (!showIntro) return;
+    if (introPhase !== "greetings") return;
 
     const interval = setInterval(() => {
       setGreetingIndex((prev) => {
@@ -129,22 +131,71 @@ export default function App() {
           return prev + 1;
         } else {
           clearInterval(interval);
-          // Sequence completed! Auto transition to cover page and play BGM
+          // Sequential "Hi" completed! Transition to the Cover Page phase & start BGM
           setTimeout(() => {
-            setShowIntro(false);
+            setIntroPhase("cover");
+            // Start BGM automatically on Cover Page phase
             if (synthRef.current) {
               synthRef.current.toggle(true).then((playing) => {
                 if (playing) setBackgroundPlay(true);
               });
             }
-          }, 1500); // give 1.5 seconds to admire the final greeting
+          }, 1200);
           return prev;
         }
       });
     }, 1600); // transition every 1.6 seconds
 
     return () => clearInterval(interval);
-  }, [showIntro]);
+  }, [introPhase]);
+
+  // Hardcoded full text configuration for typewriter welcome letter
+  const introMessage = useMemo(() => [
+    "Dear Yuvasree Mam,",
+    "Managing 97 passionate minds is no simple feat...",
+    "But day in and day out, you have led us with superhuman patience, boundless wisdom, and a warm contagious smile that lights up every room.",
+    "You are our Point of Contact (POC), our stellar trainer, and a wonderful mentor.",
+    "This interactive book is a collection of gratitude and hearts from all 97 of us who admire and respect you.",
+    "Open it further to feel our love and appreciation of your tireless service...",
+    "— In coordination, your 97-strong training batch. 🌸"
+  ], []);
+
+  // Typewriter effect typing out the letter on Cover Page phase
+  useEffect(() => {
+    if (introPhase !== "cover") return;
+
+    let charIndex = 0;
+    let lineIndex = 0;
+    let timer: any;
+
+    const typeMsgClean = () => {
+      if (lineIndex < introMessage.length) {
+        const line = introMessage[lineIndex];
+        if (charIndex <= line.length) {
+          setCurrentIntroLine(line.substring(0, charIndex));
+          charIndex++;
+          if (synthRef.current && Math.random() > 0.45) {
+            synthRef.current.playTypingSound();
+          }
+          timer = setTimeout(typeMsgClean, 35);
+        } else {
+          timer = setTimeout(() => {
+            lineIndex++;
+            charIndex = 0;
+            if (lineIndex >= introMessage.length) {
+              setIntroCompleted(true);
+            } else {
+              typeMsgClean();
+            }
+          }, 1100);
+        }
+      }
+    };
+
+    typeMsgClean();
+
+    return () => clearTimeout(timer);
+  }, [introPhase, introMessage]);
 
   // Merge core database + user written testimonials
   const testimonialsCollection = useMemo(() => {
@@ -385,7 +436,7 @@ export default function App() {
 
 
           <button
-            onClick={() => setShowIntro(true)}
+            onClick={() => setIntroPhase("greetings")}
             className="flex items-center space-x-1 text-xs px-3 py-2 bg-amber-50 rounded-full border border-amber-200 text-amber-800 hover:bg-amber-100 transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -1164,8 +1215,8 @@ export default function App() {
       </footer>
 
 
-      {/* - - - - - - INTRO POPUP: SEQUENTIAL MULTILINGUAL GREETINGS SLIDESHOW - - - - - - */}
-      {showIntro && (
+      {/* - - - - - - INTRO POPUP 1: SEQUENTIAL MULTILINGUAL GREETINGS SLIDESHOW - - - - - - */}
+      {introPhase === "greetings" && (
         <div id="intro-writing-popup" className="absolute inset-0 bg-[#fcf8f4] z-50 flex items-center justify-center p-4">
           
           {/* Decorative floral background vectors */}
@@ -1193,7 +1244,7 @@ export default function App() {
             {/* Skip Intro Button */}
             <button
               onClick={() => {
-                setShowIntro(false);
+                setIntroPhase("cover");
                 if (synthRef.current) {
                   synthRef.current.toggle(true).then((playing) => {
                     if (playing) setBackgroundPlay(true);
@@ -1254,8 +1305,83 @@ export default function App() {
             </div>
 
             <p className="text-[10px] text-amber-700 mt-5 uppercase tracking-widest font-bold opacity-85">
-              Opening Yuvasree's Memory Book...
+              Tuning Multilingual Greetings...
             </p>
+
+          </div>
+
+        </div>
+      )}
+
+      {/* - - - - - - INTRO POPUP 2: FULL SCREEN COVER PAGE (HER PHOTO + TYPEWRITER LETTER + BGM START) - - - - - - */}
+      {introPhase === "cover" && (
+        <div id="intro-cover-popup" className="absolute inset-0 bg-[#fdfaf5] z-50 flex items-center justify-center p-4">
+          
+          {/* Decorative floral background vectors */}
+          <div className="absolute top-0 left-0 w-48 h-48 opacity-25 pointer-events-none select-none">
+            <svg viewBox="0 0 100 100" fill="currentColor" className="text-rose-300">
+              <path d="M50 0 C45 25, 25 45, 0 50 C25 55, 45 75, 50 100 C55 75, 75 55, 100 50 C75 45, 55 25, 50 0 Z" />
+            </svg>
+          </div>
+          
+          {/* Floating Rose Petals Layer */}
+          <RosePetalsCanvas />
+
+          <div className="w-full max-w-2xl bg-white/90 backdrop-blur-md rounded-2xl shadow-book relative p-6 sm:p-10 border border-[#dfc3a7] text-center overflow-y-auto max-h-[92vh] custom-scrollbar overflow-x-hidden animate-soft-float">
+            
+            {/* Elegant Vintage Frame overlay */}
+            <div className="absolute inset-4 sm:inset-6 border border-amber-200 pointer-events-none rounded opacity-45" />
+            <div className="absolute inset-5 sm:inset-7 border-2 border-dashed border-amber-300 rounded pointer-events-none opacity-20" />
+
+            <div className="flex justify-between items-start border-b border-rose-100 pb-3">
+              <span className="text-xs uppercase tracking-widest gold-text font-serif-elegant font-bold">Yuvasree Mam's Tribute Cover</span>
+              <span className="text-[10px] bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-full animate-pulse relative z-10">
+                Music Playing 🎵
+              </span>
+            </div>
+
+            {/* Photo Section */}
+            <div className="mt-6 flex flex-col items-center">
+              <span className="text-3xl font-parisienne block text-rose-600 mb-1">A Tribute of Gratitude</span>
+              <p className="text-[10px] tracking-widest font-black uppercase gold-text font-serif-elegant mb-3">Dedicated to Yuvasree Mam</p>
+              
+              <div className="flex justify-center my-2 relative z-10 hover:scale-105 transition-transform duration-300">
+                <YuvasreePhoto size="medium" />
+              </div>
+            </div>
+
+            {/* Typewriter letter Reveal section */}
+            <div className="my-4 min-h-[160px] sm:min-h-[180px] px-2 sm:px-4 relative flex flex-col justify-center border-t border-rose-100/60 pt-4">
+              <p className="font-handwritten text-lg sm:text-xl text-amber-950 leading-relaxed font-semibold filter drop-shadow-[0_1px_1px_rgba(139,92,26,0.15)] px-4 text-center">
+                {currentIntroLine}
+                <span className="typing-cursor ml-1" />
+              </p>
+
+              {introCompleted && (
+                <div className="pt-2 animate-bounce">
+                  <p className="text-[9px] text-amber-700 uppercase font-black tracking-widest">
+                    ✦ Memories Compiled Successfully ✦
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Enter Book Button Trigger */}
+            <div className="border-t border-rose-100/60 pt-4 text-center space-y-2">
+              <button
+                onClick={() => {
+                  setIntroPhase("none");
+                  setCurrentSpread(1); // Takes them directly to Spread 1 (Trainee Directory & Stats)
+                }}
+                className="px-8 py-3 gold-gradient hover:opacity-95 text-[#3b2401] rounded-full text-xs font-bold shadow-lg tracking-widest uppercase transition-transform hover:scale-105 active:scale-95 flex items-center space-x-2 mx-auto relative z-10"
+              >
+                <span>Open Yuvasree's Memory Book 🌸</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+              <p className="text-[9px] text-amber-800">
+                Clicking will open the interactive pages to explore trainees roster list and feedbacks.
+              </p>
+            </div>
 
           </div>
 
