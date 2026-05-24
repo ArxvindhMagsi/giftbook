@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Parisienne&display=swap');
+
+@theme {
+  --font-cursive: "Great Vibes", cursive;
+  --font-handwritten: "Dancing Script", cursive;
+  --font-parisienne: "Parisienne", cursive;
+  --font-serif-elegant: "Playfair Display", serif;
+  --font-sans-modern: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  font-family: var(--font-sans-modern);
+  background-color: #fdfaf7;
+  color: #2d231e;
+  overflow-x: hidden;
+}
+
+/* Elegant gold/rose styling details */
+.gold-gradient {
+  background: linear-gradient(135deg, #dfb76c 0%, #b38938 100%);
+}
+
+.gold-border {
+  border-color: #dfb76c;
+}
+
+.gold-text {
+  color: #b38938;
+}
+
+.rose-gold-gradient {
+  background: linear-gradient(135deg, #fceceb 0%, #f7d6d3 50%, #f2b5af 100%);
+}
+
+.shadow-book {
+  box-shadow: 0 25px 50px -12px rgba(139, 92, 26, 0.15), 
+              0 12px 24px -4px rgba(139, 92, 26, 0.08),
+              inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.spine-gradient {
+  background: linear-gradient(to right, #402a11 0%, #7d592a 30%, #a4763b 50%, #7d592a 70%, #402a11 100%);
+}
+
+/* Custom scrolling list of names */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #fdf7f4;
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #f2b5af;
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #e28a81;
+}
+
+/* Keyframes for soft float */
+@keyframes softFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(3deg);
+  }
+}
+
+.animate-soft-float {
+  animation: softFloat 4s ease-in-out infinite;
+}
+
+/* Typing cursor animation */
+@keyframes blink {
+  50% { opacity: 0; }
+}
+.typing-cursor::after {
+  content: '|';
+  animation: blink 0.8s infinite;
+  color: #b38938;
+}
+

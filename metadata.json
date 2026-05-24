@@ -1,0 +1,6 @@
+{
+  "name": "Memory Gift Book for Yuvasree",
+  "description": "An interactive digital feedback and gratitude gift book dedicated to Yuvasree, celebrating her dedication as an exceptional Trainer and POC for 97 people.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
