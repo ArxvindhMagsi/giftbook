@@ -550,5 +550,64 @@ export const initialTestimonials: Testimonial[] = [
     avatarColor: "bg-indigo-100 text-indigo-700 border-indigo-200",
     date: "May 2026"
   },
-
+  {
+    id: 56,
+    name: "Lahari P",
+    role: "Programmer Analyst Trainee",
+    cohort: "006",
+    text: "You are very supportive and helpful throughout my Cognizant internship. You patiently clarified my doubts, guided me whenever needed, and made the learning process much easier. Thank you for your support and mentorship.",
+    tag: "Supportive Mentor",
+    avatarColor: "bg-teal-100 text-teal-700 border-teal-200",
+    date: "May 2026"
+  },
+  {
+    id: 57,
+    name: "Sneha Kamathamu",
+    role: "Programmer Analyst Trainee",
+    cohort: "004",
+    text: "Truly supportive mentor! Thank you for supporting us throughout the internship mam😊",
+    tag: "Wonderful Coach",
+    avatarColor: "bg-pink-100 text-pink-700 border-pink-200",
+    date: "May 2026"
+  },
+  {
+    id: 58,
+    name: "Vinodhini R",
+    role: "Programmer Analyst Trainee",
+    cohort: "005",
+    text: "Thank you mam for your support throughout the internship and you were a good mentor",
+    tag: "Great Mentor",
+    avatarColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    date: "May 2026"
+  },
+  {
+    id: 59,
+    name: "Pugal M",
+    role: "Programmer Analyst Trainee",
+    cohort: "006",
+    text: "Breach mail podathathuku nandri ma'am 😭🙏",
+    tag: "Life Saver",
+    avatarColor: "bg-blue-100 text-blue-700 border-blue-200",
+    date: "May 2026"
+  },
+  {
+    id: 60,
+    name: "Leo dass",
+    role: "Programmer Analyst Trainee",
+    cohort: "005",
+    text: "First time being in an IT environment and staying away from home THANKS for keeping us in a comfort space that I never felt bored ir frustrated coming to office forever grateful for the things you have done to me in this journey ❤️",
+    tag: "Comfort Zone Maker",
+    avatarColor: "bg-orange-100 text-orange-700 border-orange-200",
+    date: "May 2026"
+  },
+  {
+    id: 61,
+    name: "Mohan Raj M A",
+    role: "Programmer Analyst Trainee",
+    cohort: "005",
+    text: "Enna dhaan (cohort-5 ) thitnalum, warning mail-o breach mail-o anupama sweet-ah handle panni namma pakkam ninnenga mam.\nUnga strict approach, and safe support nala tha we successfully completed the internship .Thank you so much ma'am!",
+    tag: "Sweet & Strict Mentor",
+    avatarColor: "bg-purple-100 text-purple-700 border-purple-200",
+    date: "May 2026"
+  }
 ];
